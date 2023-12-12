@@ -24,15 +24,8 @@ varying vec3 upVec;
 
 void main() {
     
-    vec2 miniCoord1=screenCoordToMiniCoord(texCoord,0,0,1);
-    vec2 miniCoord2=screenCoordToMiniCoord(texCoord,2,2,2);
-    vec4 color;
-    if(inScreen(miniCoord1)){
-        color = texture2D(colortex0,miniCoord1);
-    }
-    if(inScreen(miniCoord2)){
-        color = texture2D(colortex0,miniCoord2);
-    }
+    vec4 color = texture2D(colortex0, miniCoordToScreenCoord(texCoord,0,0,1));
+    color=mix(color,texture2D(colortex0, miniCoordToScreenCoord(texCoord,2,2,2)),0.5);
 	
     /*DRAWBUFFERS:0*/
 	gl_FragData[0] = color;
