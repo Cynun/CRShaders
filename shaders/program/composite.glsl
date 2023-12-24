@@ -5,13 +5,10 @@
 #ifdef VSH
 
 varying vec2 texCoord;
-varying vec3 upVec;
 
 void main() {
 
 	texCoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).st;
-	
-	upVec = normalize(gbufferModelView[1].xyz);
 
     gl_Position = ftransform();
 
@@ -19,21 +16,23 @@ void main() {
 
 #else
 
+
+const int RG32I = 0;
+const int RGB32F = 0;
+
+const int colortex2Format = RGB32F;
+const int colortex3Format = RG32I;
+
+
 varying vec2 texCoord;
-varying vec3 upVec;
+
 
 void main() {
     
-    vec2 miniCoord1=screenCoordToMiniCoord(texCoord,0,0,1);
-    vec2 miniCoord2=screenCoordToMiniCoord(texCoord,2,2,2);
-    vec4 color;
-    if(inScreen(miniCoord1)){
-        color = texture2D(colortex0,miniCoord1);
-    }
-    if(inScreen(miniCoord2)){
-        color = texture2D(colortex0,miniCoord2);
-    }
-	
+    vec4 color=texture2D(colortex0,texCoord);
+
+    vec3 normalViewCoord=texture2D(colortex2,texCoord).xyz;
+
     /*DRAWBUFFERS:0*/
 	gl_FragData[0] = color;
 

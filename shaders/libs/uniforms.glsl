@@ -1,5 +1,5 @@
-#ifndef GENERAL_UNIFORMS
-#define GENERAL_UNIFORMS
+#ifndef __GENERAL_UNIFORMS__
+#define __GENERAL_UNIFORMS__
 
 uniform float rainStrength;
 uniform sampler2D colortex0;
@@ -39,5 +39,20 @@ uniform ivec2 eyeBrightnessSmooth;
 uniform ivec2 eyeBrightness;
 uniform float centerDepthSmooth;
 uniform float aspectRatio;
+
+const float sunPathRotation = 15;
+
+
+#define BLOCKID_NATURE_LIGHTER 10001
+#define BLOCKID_LIGHTER 10002
+#define BLOCKID_WATER 10003
+#define BLOCKID_ICE 10004
+#define BLOCKID_GRASS 10005
+#define BLOCKID_ORE 10006
+#define BLOCKID_ORE_BLOCK 10007
+#define BLOCKID_GLASS 10008
+#define BLOCKID_LEAVES 10009
+#define BLOCKID_HAND 20000
+
 
 #endif
