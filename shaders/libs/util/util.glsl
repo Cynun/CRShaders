@@ -20,35 +20,6 @@ bool inScreen(vec2 texCoord){
     return false;
 }
 
-#define CONVOLUTION_FUNCTION(SIZE) \
-    int n=SIZE/2;\
-    vec2 offset=vec2(radius)*vec2(1,aspectRatio)/SIZE;\
-    float weightSum=0;\
-    vec4 color=vec4(0);\
-    for(int i=0;i<SIZE;i++){\
-        for(int j=0;j<SIZE;j++){\
-            float weight=core[i+j*SIZE];\
-            weightSum+=weight;\
-            color+=weight*texture2D(src,texCoord+offset*vec2(i,j));\
-        }\
-    }\
-    if(normalized){\
-        return color/weightSum;\
-    }\
-    return color;
-
-vec4 convolution(sampler2D src,vec2 texCoord,float core[9],float radius,bool normalized){
-    CONVOLUTION_FUNCTION(3)
-}
-
-vec4 convolution(sampler2D src,vec2 texCoord,float core[25],float radius,bool normalized){
-    CONVOLUTION_FUNCTION(5)
-}
-
-vec4 convolution(sampler2D src,vec2 texCoord,float core[49],float radius,bool normalized){
-    CONVOLUTION_FUNCTION(7)
-}
-
 vec4 getWorldCoord(vec2 texCoord,float depth){
 	vec4 screenCoord = vec4(texCoord.x, texCoord.y, depth, 1.0);
     screenCoord.xyz= (screenCoord * 2.0 - 1.0).xyz;
@@ -57,7 +28,9 @@ vec4 getWorldCoord(vec2 texCoord,float depth){
     return gbufferModelViewInverse * viewCoord;
 }
 
-#define SHADOW_MAP_BIAS 0.95
+#define GET_LUMA(COLOR) (0.213 * COLOR.r + 0.715 * COLOR.g + 0.072 * COLOR.b)
+
+#define SHADOW_MAP_BIAS 0.85
 
 vec2 getFishEyeCoord(vec2 ndcCoord) {
     return ndcCoord / ((1-SHADOW_MAP_BIAS)+SHADOW_MAP_BIAS*length(ndcCoord.xy));
@@ -91,8 +64,8 @@ bool isEqual(float a,float b){
 }
 
 float getTime(vec3 upVec){
-    float sunDotUp = clamp(10*dot(normalize(sunPosition),upVec),0,1);
-    return 1-(sunDotUp*0.5+0.5);
+    float sunDotUp = dot(normalize(sunPosition),upVec);
+    return -sunDotUp;
 }
 
 float getNoise(vec2 coord) {

@@ -13,6 +13,7 @@ uniform sampler2D colortex7;
 uniform sampler2D noisetex;
 uniform sampler2D depthtex0;
 uniform sampler2D depthtex1;
+uniform sampler2D shadowcolor0;
 uniform sampler2DShadow shadowtex0;
 uniform sampler2DShadow shadowtex1;
 uniform vec3 sunPosition;
@@ -40,9 +41,6 @@ uniform ivec2 eyeBrightness;
 uniform float centerDepthSmooth;
 uniform float aspectRatio;
 
-const float sunPathRotation = 15;
-
-
 #define BLOCKID_NATURE_LIGHTER 10001
 #define BLOCKID_LIGHTER 10002
 #define BLOCKID_WATER 10003
@@ -52,7 +50,9 @@ const float sunPathRotation = 15;
 #define BLOCKID_ORE_BLOCK 10007
 #define BLOCKID_GLASS 10008
 #define BLOCKID_LEAVES 10009
+
 #define BLOCKID_HAND 20000
+#define BLOCKID_SKY 20001
 
 
 #endif

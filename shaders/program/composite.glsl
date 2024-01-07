@@ -5,10 +5,13 @@
 #ifdef VSH
 
 varying vec2 texCoord;
+varying vec3 upVec;
 
 void main() {
 
 	texCoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).st;
+
+    upVec = normalize(gbufferModelView[1].xyz);
 
     gl_Position = ftransform();
 
@@ -23,9 +26,8 @@ const int RGB32F = 0;
 const int colortex2Format = RGB32F;
 const int colortex3Format = RG32I;
 
-
 varying vec2 texCoord;
-
+varying vec3 upVec;
 
 void main() {
     
