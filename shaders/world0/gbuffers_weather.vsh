@@ -3,4 +3,4 @@
 #define VSH
 #define WORLD
 
-#include "/program/gbuffers_basic.glsl"
+#include "/program/gubffers_weather.glsl"

@@ -3,12 +3,4 @@
 #define FSH
 #define WORLD
 
-#define DRAW_TEXTURE
-#define SCREEN_TO_VIEW
-#define VIEW_TO_WORLD
-#define DRAW_SHADOW
-#define DRAW_DISTANCE_FOG
-#define COLORFUL_SHADOW
-#define WORLD_TO_SUN
-
-#include "/program/gbuffers_basic.glsl"
+#include "/program/gubffers_weather.glsl"

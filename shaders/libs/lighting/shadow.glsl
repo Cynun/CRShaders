@@ -44,7 +44,7 @@ float inShadow(vec4 sunCoord,float dis,sampler2DShadow shadowtex,float filterRad
     float shadow=0;
 
     for(int i=0;i<9;i++){
-        float offset=filterRadius/shadowMapResolution*getNoise(sunCoord.xy+0.4363465*i)/(1+0.1*dis);
+        float offset=filterRadius/shadowMapResolution*getNoise(123.245*(sunCoord.xy+i))/(1+0.1*dis);
         shadow+=getShadow(shadowtex,sunCoord.xyz+vec3(offset*shadowFilterOffset[i],0),filterRadius);
     }
     
@@ -54,7 +54,8 @@ float inShadow(vec4 sunCoord,float dis,sampler2DShadow shadowtex,float filterRad
 
 float getShadowCoefficient(vec4 sunCoord,float dis,vec3 normalViewCoord,vec3 lightViewCoord,
                             sampler2DShadow shadowtex,float blockId,float time){
-
+    
+    // Shadow attenuation at far
     float disAttenuation=dis;
     if(disAttenuation>16*64){
         return 0;

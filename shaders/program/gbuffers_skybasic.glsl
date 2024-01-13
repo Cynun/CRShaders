@@ -35,8 +35,6 @@ void main() {
 
 #else
 
-uniform sampler2D texture;
-
 varying vec2 texCoord;
 varying float blockId;
 varying vec3 normal;

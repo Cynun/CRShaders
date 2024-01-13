@@ -3,6 +3,8 @@
 #include "/libs/util/util.glsl"
 #include "/libs/sky/sky.glsl"
 #include "/libs/color/color.glsl"
+#include "/libs/bloom/bloom.glsl"
+#include "/libs/fog/fog.glsl"
 
 #ifdef VSH
 
@@ -35,8 +37,6 @@ void main() {
 
 #else
 
-uniform sampler2D texture;
-
 varying vec2 texCoord;
 varying float blockId;
 varying vec3 normal;
@@ -47,7 +47,10 @@ varying vec4 lightMapCoord;
 void main() {
 
     vec4 color = texture2D(texture,texCoord)*baseColor;
-    vec3 bloom;
+    vec4 bloom;
+    bloom.rgb=color.rgb*color.a;
+
+    #ifdef WORLD
 
     vec3 screenCoord = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z);
     vec4 viewCoord=getViewCoord(screenCoord.xy,screenCoord.z);
@@ -61,11 +64,13 @@ void main() {
         color.rgb*=getMoonColor(time);
     }
 
+    #endif
+
     /* DRAWBUFFERS:0234 */
     gl_FragData[0] = color;
     gl_FragData[1] = vec4(normal,1);
     gl_FragData[2] = vec4(blockId,blockId,1,1);
-    gl_FragData[3] = vec4(bloom,0);
+    gl_FragData[3] = bloom;
 
 }
 

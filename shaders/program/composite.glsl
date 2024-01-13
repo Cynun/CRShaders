@@ -1,6 +1,8 @@
 #include "/libs/config.glsl"
 #include "/libs/uniforms.glsl"
 #include "/libs/util/util.glsl"
+#include "/libs/bloom/bloom.glsl"
+#include "/libs/color/unwater.glsl"
 
 #ifdef VSH
 
@@ -19,24 +21,24 @@ void main() {
 
 #else
 
-
-const int RG32I = 0;
-const int RGB32F = 0;
-
-const int colortex2Format = RGB32F;
-const int colortex3Format = RG32I;
-
 varying vec2 texCoord;
 varying vec3 upVec;
 
 void main() {
     
     vec4 color=texture2D(colortex0,texCoord);
+    vec4 bloom=texture2D(colortex4,texCoord);
 
-    vec3 normalViewCoord=texture2D(colortex2,texCoord).xyz;
+    float time=getTime(upVec);
+    drawUnwaterColor(color,time);
 
-    /*DRAWBUFFERS:0*/
+    #ifdef BLOOM_ENABLE
+    getNatureBloom(bloom,color);
+    #endif
+
+    /*DRAWBUFFERS:04*/
 	gl_FragData[0] = color;
+    gl_FragData[1] = bloom;
 
 }
 

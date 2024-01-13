@@ -16,6 +16,7 @@ uniform sampler2D depthtex1;
 uniform sampler2D shadowcolor0;
 uniform sampler2DShadow shadowtex0;
 uniform sampler2DShadow shadowtex1;
+uniform sampler2D texture;
 uniform vec3 sunPosition;
 uniform vec3 moonPosition;
 uniform int isEyeInWater;
@@ -40,6 +41,8 @@ uniform ivec2 eyeBrightnessSmooth;
 uniform ivec2 eyeBrightness;
 uniform float centerDepthSmooth;
 uniform float aspectRatio;
+uniform vec3 skyColor;
+uniform vec3 fogColor;
 
 #define BLOCKID_NATURE_LIGHTER 10001
 #define BLOCKID_LIGHTER 10002
@@ -53,6 +56,16 @@ uniform float aspectRatio;
 
 #define BLOCKID_HAND 20000
 #define BLOCKID_SKY 20001
+
+const float shadowIntervalSize = 0.0;
+
+const int RG32F = 0;
+const int RGB32F = 0;
+
+const int colortex2Format = RGB32F;
+const int colortex3Format = RG32F;
+
+const bool colortex7Clear = false;
 
 
 #endif

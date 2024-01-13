@@ -8,6 +8,8 @@ vec3 getTorchColor(){return vec3(TORCH_COLOR_R,TORCH_COLOR_G,TORCH_COLOR_B);}
 
 vec3 getShadowColor(){return vec3(SHADOW_COLOR_R,SHADOW_COLOR_G,SHADOW_COLOR_B);}
 
+vec3 getLavaFogColor(){return vec3(LAVA_FOG_R,LAVA_FOG_G,LAVA_FOG_B);}
+
 #define COLOR_TIME_MIX(DAY,TWILIGHT,NIGHT) time>0?mix(TWILIGHT,NIGHT,time):mix(DAY,TWILIGHT,time+1);
 
 #define TIME_SCALE_AND_OFFSET(SCALE,OFFSET) time=clamp(SCALE*time+OFFSET,-1,1);
@@ -75,14 +77,45 @@ vec3 getMoonColor(float time){
 }
 
 float getDistanceFogStart(){
-    return mix(DISTANCE_FOG_START,DISTANCE_FOG_START_RAIN,rainStrength);
+    if(isEyeInWater==0)
+        return mix(DISTANCE_FOG_START,DISTANCE_FOG_START_RAIN,rainStrength);
+    else if(isEyeInWater==1)
+        return UNWATER_FOG_START;
+    return 0;
 }
 
 float getDistanceFogEnd(){
-    return mix(DISTANCE_FOG_END,DISTANCE_FOG_END_RAIN,rainStrength);
+    if(isEyeInWater==0)
+        return mix(DISTANCE_FOG_END,DISTANCE_FOG_END_RAIN,rainStrength);
+    else if(isEyeInWater==1)
+        return UNWATER_FOG_END;
+    return LAVA_FOG_END/far;
 }
 
-#elif END
+vec3 getUnwaterFogColor(float time){
+    TIME_SCALE_AND_OFFSET(2.5,0.35);
+    return mix(vec3(UNWATER_FOG_DAY_R,UNWATER_FOG_DAY_G,UNWATER_FOG_DAY_B)
+    ,vec3(UNWATER_FOG_NIGHT_R,UNWATER_FOG_NIGHT_G,UNWATER_FOG_NIGHT_B)
+    ,time*0.5+0.5);
+}
+
+// Only overworld
+vec3 getCloudLightColor(float time){
+    TIME_SCALE_AND_OFFSET(2.5,0.35);
+    vec3 color = COLOR_TIME_MIX(vec3(SUN_DAY_COLOR_R,SUN_DAY_COLOR_G,SUN_DAY_COLOR_B)*0.2
+                ,vec3(SUN_TWILIGHT_COLOR_R,SUN_TWILIGHT_COLOR_G,SUN_TWILIGHT_COLOR_B)*0.1
+                ,vec3(MOON_COLOR_R,MOON_COLOR_G,MOON_COLOR_B)*0.05
+                );
+    return color*(1-0.8*rainStrength);
+}
+
+// Only overworld
+float getCloudDensity(){
+    return mix(CLOUD_DENSITY,RAIN_CLOUD_DENSITY,rainStrength);
+}
+
+#endif
+#ifdef END
 
 vec3 getAmbientColor(float time){
     return vec3(AMBIENT_END_COLOR_R,AMBIENT_END_COLOR_G,AMBIENT_END_COLOR_B);
@@ -93,22 +126,35 @@ vec3 getSkyLightColor(float time){
 }
 
 vec3 getSkyUpColor(float time){
-    return vec3(0);
+    return fogColor;
 }
 
 vec3 getSkyDownColor(float time){
-    return vec3(0);
+    return fogColor;
 }
 
 float getDistanceFogStart(){
-    return DISTANCE_FOG_START;
+    if(isEyeInWater==0)
+        return DISTANCE_FOG_START;
+    else if(isEyeInWater==1)
+        return UNWATER_FOG_START;
+    return 0;
 }
 
 float getDistanceFogEnd(){
-    return DISTANCE_FOG_END_RAIN;
+    if(isEyeInWater==0)
+        return DISTANCE_FOG_END;
+    else if(isEyeInWater==1)
+        return UNWATER_FOG_END;
+    return LAVA_FOG_END/far;
 }
 
-#elif NETHER 
+vec3 getUnwaterFogColor(float time){
+    return vec3(UNWATER_FOG_NIGHT_R,UNWATER_FOG_NIGHT_G,UNWATER_FOG_NIGHT_B);
+}
+
+#endif
+#ifdef NETHER
 
 vec3 getAmbientColor(float time){
     return vec3(AMBIENT_NETHER_COLOR_R,AMBIENT_NETHER_COLOR_G,AMBIENT_NETHER_COLOR_B);
@@ -119,20 +165,34 @@ vec3 getSkyLightColor(float time){
 }
 
 vec3 getSkyUpColor(float time){
-    return vec3(0);
+    return fogColor;
 }
 
 vec3 getSkyDownColor(float time){
-    return vec3(0);
+    return fogColor;
 }
 
 float getDistanceFogStart(){
-    return DISTANCE_FOG_START;
+    if(isEyeInWater==0)
+        return DISTANCE_FOG_START;
+    else if(isEyeInWater==1)
+        return UNWATER_FOG_START;
+    return 0;
 }
 
 float getDistanceFogEnd(){
-    return DISTANCE_FOG_END_RAIN;
+    if(isEyeInWater==0)
+        return DISTANCE_FOG_END;
+    else if(isEyeInWater==1)
+        return UNWATER_FOG_END;
+    return LAVA_FOG_END/far;
 }
+
+vec3 getUnwaterFogColor(float time){
+    return vec3(UNWATER_FOG_NIGHT_R,UNWATER_FOG_NIGHT_G,UNWATER_FOG_NIGHT_B);
+}
+
+#else
 
 #endif
 
