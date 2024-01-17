@@ -55,6 +55,10 @@ void drawLight(inout vec4 color,vec4 colorSunCoord,float time,float luminous,vec
 }
 
 void drawVolumetricLight(inout vec4 color,vec3 screenCoord,vec3 lightViewCoord,float time){
+
+    if(isEyeInWater!=1){
+        return;
+    }
     
     vec3 viewCoord=getViewCoord(screenCoord.xy,screenCoord.z).xyz;
     vec3 dirction=normalize(viewCoord);
@@ -65,10 +69,10 @@ void drawVolumetricLight(inout vec4 color,vec3 screenCoord,vec3 lightViewCoord,f
 
     float depth = linearizeDepth(texture2D(depthtex0,screenCoord.st).x);
 
-    vec3 lightColor=getSkyLightColor(time);
+    float lightColorLuma=GET_LUMA(getSkyLightColor(time))*clamp(abs(time*4),0,1);
 
     vec3 lightWorldCoord=3*normalize(getWorldCoordFormViewCoord(vec4(lightViewCoord,1)).xyz);
-    for(int i = 0; i < 20; i++)
+    for(int i = 0; i < 25; i++)
     {
         float offset = (0.5+0.5*getNoise(1244.214*testPoint.xy+4352.134*testPoint.yz)) * pow(float(i + 1), 1.46);
         testPoint += dirction * offset;
@@ -84,9 +88,9 @@ void drawVolumetricLight(inout vec4 color,vec3 screenCoord,vec3 lightViewCoord,f
         vec4 testPointSunScreenCoordNoFishEye = getSunScreenCoordNoFishEye(testPointAbsoluteWorldCoord);
 
         float rand=
-            4.0/7*noiseSample(testPointSunScreenCoordNoFishEye.xy).x
-            +2.0/7*noiseSample(testPointSunScreenCoordNoFishEye.xy*2).x
-            +1.0/7*noiseSample(testPointSunScreenCoordNoFishEye.xy*4).x;
+            4.0/7*noiseSample(testPointSunScreenCoordNoFishEye.xy/4).x
+            +2.0/7*noiseSample(testPointSunScreenCoordNoFishEye.xy/2).x
+            +1.0/7*noiseSample(testPointSunScreenCoordNoFishEye.xy).x;
 
         vec4 testPointSunScreenCoord = getSunScreenCoord(testPointWorldCoord);
 
@@ -97,9 +101,9 @@ void drawVolumetricLight(inout vec4 color,vec3 screenCoord,vec3 lightViewCoord,f
             continue;
         }
         else if(testPointSunScreenCoord.z>closetInSun0 && testPointSunScreenCoord.z<closetInSun1){
-            if(rand > 0.7){
+            if(rand>0.5){
                 vec4 blockColor=texture2D(shadowcolor0,testPointSunScreenCoord.xy);
-                color.rgb+=0.01*lightColor*offset*blockColor.rgb*(1-clamp(0.1*(testPointSunScreenCoord.z-closetInSun0),0,1));
+                color.rgb+=0.01*rand*rand*lightColorLuma*offset*blockColor.rgb*(1-clamp(0.1*(testPointSunScreenCoord.z-closetInSun0),0,1));
             }
         }
         else{

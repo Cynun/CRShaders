@@ -11,16 +11,17 @@ void drawReflect(inout vec4 color,vec3 screenCoord,vec4 viewCoord,vec3 normal,fl
     vec3 reflectVec=reflect(normalize(viewCoord.xyz),normal);
     
     const float stepBase = 0.05;
-    vec3 testPoint = viewCoord.xyz+0.1*normal;
+    vec3 testPoint = viewCoord.xyz+0.25*normal;
     vec3 reflectStep = reflectVec;
     reflectStep *= stepBase;
     bool hit = false;
     vec4 hitColor = vec4(0.0);
+
     for(int i = 0; i < 35; i++)
     {
         testPoint += reflectStep * pow(float(i + 1), 1.46);
         vec2 uv = getScreenCoordFromViewCoord(vec4(testPoint,1)).st;
-        float sampleDepth = texture2D(depthtex0, uv, 0.0).x;
+        float sampleDepth = texture2D(depthtex1, uv, 0.0).x;
         sampleDepth = linearizeDepth(sampleDepth);
         float testDepth = getLinearDepthFormViewCoord(vec4(testPoint,1));
         if(sampleDepth < testDepth && testDepth - sampleDepth < (1.0 / 2048.0) * (1.0 + testDepth * 200.0 + float(i)))
@@ -38,7 +39,7 @@ void drawReflect(inout vec4 color,vec3 screenCoord,vec4 viewCoord,vec3 normal,fl
     if(!hit){
         vec2 uv = getScreenCoordFromViewCoord(vec4(testPoint,1)).st;
         float testDepth = getLinearDepthFormViewCoord(vec4(testPoint,1));
-        float sampleDepth = texture2D(depthtex0, uv, 0.0).x;
+        float sampleDepth = texture2D(depthtex1, uv, 0.0).x;
         sampleDepth = linearizeDepth(sampleDepth);
         if(testDepth - sampleDepth < 0.5)
         {

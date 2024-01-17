@@ -1,6 +1,7 @@
 #include "/libs/config.glsl"
 #include "/libs/uniforms.glsl"
 #include "/libs/util/util.glsl"
+#include "/libs/util/filtering.glsl"
 #include "/libs/color/color.glsl"
 #include "/libs/bloom/bloom.glsl"
 #include "/libs/util/FXAA.glsl"
@@ -32,6 +33,11 @@ void main() {
 
     #ifdef FAXX_ENABLE
     FXAA(color,colortex0,texCoord);
+    #endif
+
+    #define FILTERING
+    #ifdef FILTERING
+    filtering(color,colortex0,texCoord);
     #endif
 
     // hsv color adjust

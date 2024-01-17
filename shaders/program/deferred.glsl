@@ -47,11 +47,9 @@ void main() {
     #endif
     #endif
 
-    /*
     #ifdef WORLD
     drawVolumetricLight(color,screenCoord,lightViewCoord,time);
     #endif
-    */
 
     gl_FragData[0] = clamp(color,vec4(0),vec4(1));
 	
