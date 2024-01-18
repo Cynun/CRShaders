@@ -7,18 +7,18 @@
 #ifdef WORLD
 
 #define CLOUD_BUTTOM 256
-#define CLOUD_TOP 306
+#define CLOUD_TOP 316
 
 float cloudNoise(vec3 absoluteWorldCoord){
     float noise = 
-        8.0/21*noiseSample((absoluteWorldCoord.xz+frameTimeCounter)/32768).x
-        +4.0/21*noiseSample((absoluteWorldCoord.xz+frameTimeCounter)/16384).x
-        +2.0/21*noiseSample((absoluteWorldCoord.xy+frameTimeCounter)/8192).x
-        +2.0/21*noiseSample((absoluteWorldCoord.xz+frameTimeCounter)/8192).x
-        +2.0/21*noiseSample((absoluteWorldCoord.yz+frameTimeCounter)/8192).x
-        +1.0/21*noiseSample((absoluteWorldCoord.xy+frameTimeCounter)/4096).x
-        +1.0/21*noiseSample((absoluteWorldCoord.xz+frameTimeCounter)/4096).x
-        +1.0/21*noiseSample((absoluteWorldCoord.yz+frameTimeCounter)/4096).x;
+        8.0/16.5*noiseSample((absoluteWorldCoord.xz+frameTimeCounter)/32768).x
+        +4.0/16.5*noiseSample((-absoluteWorldCoord.zx+frameTimeCounter)/16384).x
+        +1.0/16.5*noiseSample((absoluteWorldCoord.yx+frameTimeCounter)/4096).x
+        +1.0/16.5*noiseSample((-absoluteWorldCoord.xz+frameTimeCounter)/4096).x
+        +1.0/16.5*noiseSample((absoluteWorldCoord.yz+frameTimeCounter)/4096).x
+        +0.5/16.5*noiseSample((-absoluteWorldCoord.xy+frameTimeCounter)/2048).x
+        +0.5/16.5*noiseSample((absoluteWorldCoord.zx+frameTimeCounter)/2048).x
+        +0.5/16.5*noiseSample((-absoluteWorldCoord.yz+frameTimeCounter)/2048).x;
     return noise*sqrt(
         cos((absoluteWorldCoord.y-0.5*(CLOUD_TOP+CLOUD_BUTTOM))*1.57/(0.5*(CLOUD_TOP-CLOUD_BUTTOM)))
         );

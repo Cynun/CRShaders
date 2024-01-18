@@ -103,8 +103,8 @@ vec3 getUnwaterFogColor(float time){
 vec3 getCloudLightColor(float time){
     TIME_SCALE_AND_OFFSET(2.5,0.35);
     vec3 color = COLOR_TIME_MIX(vec3(SUN_DAY_COLOR_R,SUN_DAY_COLOR_G,SUN_DAY_COLOR_B)*0.2
-                ,vec3(SUN_TWILIGHT_COLOR_R,SUN_TWILIGHT_COLOR_G,SUN_TWILIGHT_COLOR_B)*0.1
-                ,vec3(MOON_COLOR_R,MOON_COLOR_G,MOON_COLOR_B)*0.05
+                ,vec3(SUN_TWILIGHT_COLOR_R,SUN_TWILIGHT_COLOR_G,SUN_TWILIGHT_COLOR_B)*0.15
+                ,vec3(MOON_COLOR_R,MOON_COLOR_G,MOON_COLOR_B)*0.1
                 );
     return color*(1-0.8*rainStrength);
 }

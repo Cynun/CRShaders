@@ -3,7 +3,7 @@
 #ifndef __SHADOW__
 #define __SHADOW__
 
-const int shadowMapResolution = 2048;
+const int shadowMapResolution = 4096;
 
 const float shadowDistance = 160;
 
@@ -23,7 +23,7 @@ vec2 shadowFilterOffset[9]=vec2[](
     vec2(-0.7071, 0.7071)
 );
 
-float getShadow(sampler2DShadow src,vec3 sunCoord,float radius){
+float getShadow(sampler2DShadow src,vec3 sunCoord){
     float shadow=sunCoord.z-shadow2D(src,sunCoord).x;
     if(shadow>0.0001){
         if(shadow>=0.001){
@@ -44,8 +44,8 @@ float inShadow(vec4 sunCoord,float dis,sampler2DShadow shadowtex,float filterRad
     float shadow=0;
 
     for(int i=0;i<9;i++){
-        float offset=filterRadius/shadowMapResolution*getNoise(123.245*(sunCoord.xy+i))/(1+0.1*dis);
-        shadow+=getShadow(shadowtex,sunCoord.xyz+vec3(offset*shadowFilterOffset[i],0),filterRadius);
+        float offset=filterRadius/shadowMapResolution/(1+0.1*dis);
+        shadow+=getShadow(shadowtex,sunCoord.xyz+vec3(offset*shadowFilterOffset[i],0));
     }
     
     return shadow/9;
@@ -79,7 +79,7 @@ float getShadowCoefficient(vec4 sunCoord,float dis,vec3 normalViewCoord,vec3 lig
         angleShadow=0;
     }
 
-    float shadowCoefficient=inShadow(sunCoord,dis,shadowtex,4)*disAttenuation;
+    float shadowCoefficient=inShadow(sunCoord,dis,shadowtex,2)*disAttenuation;
 
     shadowCoefficient=max(shadowCoefficient,angleShadow);
     shadowCoefficient=mix(1,shadowCoefficient,abs(clamp(10*time,-1,1)));
