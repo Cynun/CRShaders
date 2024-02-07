@@ -23,7 +23,7 @@ void getAutoMaterial(inout vec4 color,inout vec3 normal,inout vec4 material,floa
         #include "/libs/material/glass.glsl"
     }
     BLOCK_TYPE(BLOCKID_ORE_BLOCK){
-        
+        #include "/libs/material/ore_block.glsl"
     }
     #ifdef LIGHT_ORE_ENABLE
     BLOCK_TYPE(BLOCKID_ORE){
