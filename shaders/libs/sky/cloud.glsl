@@ -60,7 +60,7 @@ void drawCloud(inout vec4 color,vec3 screenCoord,vec3 lightViewCoord,float time)
     float depth = linearizeDepth(texture2D(depthtex0,screenCoord.st).x);
 
     vec3 lightWorldCoord=3*normalize(getWorldCoordFormViewCoord(vec4(lightViewCoord,1)).xyz);
-    for(int i = 0; i < 35; i++)
+    for(int i = 0; i < 40; i++)
     {
         testPoint += dirction * (0.5+0.5*getNoise(1244.214*testPoint.xy+4352.134*testPoint.yz)) * pow(float(i + 1), 1.46);
         if(testPoint.y < CLOUD_BUTTOM || CLOUD_TOP < testPoint.y){
@@ -87,7 +87,7 @@ void drawCloud(inout vec4 color,vec3 screenCoord,vec3 lightViewCoord,float time)
                     lightStrength-=0.2;
                 }
             }
-            cloudColor.rgb+=getCloudLightColor(time)*lightStrength;
+            cloudColor.rgb+=getCloudLightColor(time)*lightStrength*clamp(abs(time)*25,0,1);
             cloudColor.rgb=clamp(cloudColor.rgb,vec3(0),vec3(1));
             break;
         }

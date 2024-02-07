@@ -1,1 +1,1 @@
-material.x=color.a;
+material.x=clamp(color.a,0,0.8);

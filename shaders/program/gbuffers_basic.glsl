@@ -97,7 +97,6 @@ void main() {
     vec4 sunCoord=getSunScreenCoord(worldCoord);
 
     #ifdef DRAW_SHADOW
-    #ifdef SHADOW_ENABLE
 
     vec3 lightViewCoord;
 
@@ -115,6 +114,8 @@ void main() {
     lightViewCoord=normalize(getViewCoordFromWorldCoord(vec4(1,1,1,1)).xyz); 
     #endif
 
+    #ifdef SHADOW_ENABLE
+
     shadowCoefficient0=getShadowCoefficient(sunCoord,dis,normal,lightViewCoord,shadowtex0,blockId,time);
 
     #ifdef COLORFUL_SHADOW_ENABLE
@@ -124,7 +125,11 @@ void main() {
     shadowCoefficient1=shadowCoefficient0;
     #endif //COLORFUL_SHADOW END
 
+    #else //DRAW_SHADOW CLOSE
+    shadowCoefficient0=getAngleShadow(normal,lightViewCoord,blockId,time);
+    shadowCoefficient1=shadowCoefficient0;
     #endif //DRAW_SHADOW END
+
     #endif
 
     #endif //WORLD_TO_SUN END

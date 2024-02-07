@@ -3,7 +3,11 @@
 #ifndef __SHADOW__
 #define __SHADOW__
 
+#ifdef SHADOW_ENABLE
 const int shadowMapResolution = 4096;
+#else
+const int shadowMapResolution = 8;
+#endif
 
 const float shadowDistance = 160;
 
@@ -87,5 +91,26 @@ float getShadowCoefficient(vec4 sunCoord,float dis,vec3 normalViewCoord,vec3 lig
 
     return shadowCoefficient;
 }
+
+float getAngleShadow(vec3 normalViewCoord,vec3 lightViewCoord,float blockId,float time){
+
+    float lightDotNormal=dot(normalViewCoord,lightViewCoord);
+    float angleShadow=clamp(1-lightDotNormal,0,1);
+    angleShadow*=angleShadow*angleShadow;
+
+    if(isEqual(blockId,BLOCKID_LEAVES)||isEqual(blockId,BLOCKID_GRASS)){
+        angleShadow*=0.5;
+    }
+    else if(isEqual(blockId,BLOCKID_LIGHTER)||isEqual(blockId,BLOCKID_NATURE_LIGHTER)){
+        angleShadow=0.0;
+    }
+
+    float shadowCoefficient=angleShadow;
+    shadowCoefficient=mix(1,shadowCoefficient,abs(clamp(10*time,-1,1)));
+    shadowCoefficient=mix(shadowCoefficient,1,rainStrength*0.8);
+
+    return shadowCoefficient;
+}
+
 
 #endif
