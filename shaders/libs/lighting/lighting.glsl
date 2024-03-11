@@ -15,7 +15,8 @@ void drawLight(inout vec4 color,vec4 colorSunCoord,float time,float luminous,vec
     #endif
    
     // Draw ambient light
-    lightMapValue.x*=lightMapValue.x*lightMapValue.x;
+    // lightMapValue.x*=lightMapValue.x;
+    lightMapValue.x*=0.75;
     color.rgb*=mix(getAmbientColor(time),vec3(1),lightMapValue.x);
 
     // Get setting
@@ -42,11 +43,11 @@ void drawLight(inout vec4 color,vec4 colorSunCoord,float time,float luminous,vec
     // Mix sky light/shadow and torch light
     #ifdef DRAW_LIGHT_IN_DARK_PLACE
     lightOrShadow=max(
-        lightOrShadow*mix(1,clamp(0.05+lightMapValue.y,0,1),max(shadowCoefficient0,0.25*colorfulShadowCoefficient))
+        lightOrShadow*mix(1,clamp(0.5+lightMapValue.y,0,1),max(shadowCoefficient0,0.25*colorfulShadowCoefficient))
         ,(1+torchColor)*lightMapValue.x
         );
     #else
-    lightOrShadow=max(lightOrShadow*clamp(0.05+lightMapValue.y,0,1),(1+torchColor)*lightMapValue.x);
+    lightOrShadow=max(lightOrShadow*clamp(0.5+lightMapValue.y,0,1),(1+torchColor)*lightMapValue.x);
     #endif
 
     // Draw light/shadow

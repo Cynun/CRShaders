@@ -21,8 +21,8 @@ vec3 getDistanceFogColor(vec4 viewCoord,float upDotView,float time){
         vec3 sunColor=getSunColor(time);
         vec3 moonColor=getMoonColor(time);
 
-        float sunLightSth=clamp(-time+0.5,0,1)*0.75;
-        float moonLightSth=clamp(time+0.15,0,1)*0.75;
+        float sunLightSth=clamp(-time+0.5,0,1)*0.5;
+        float moonLightSth=clamp(time+0.15,0,1)*0.5;
 
         float disToSun=length(normalize(sunPosition)-normalize(viewCoord.xyz));
         float disToMoon=length(normalize(moonPosition)-normalize(viewCoord.xyz));
