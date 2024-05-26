@@ -4,7 +4,7 @@
 #define __FILTERING__
 
 void filtering(inout vec4 color,sampler2D src,vec2 texCoord){
-    vec2 offset=vec2(0.75)/vec2(viewWidth,viewHeight);
+    vec2 offset=vec2(0.5)/vec2(viewWidth,viewHeight);
     vec3 N,S,W,E,NE,NW,SE,SW,M;
     M = rgb2hsv(color.rgb);
     N = rgb2hsv(texture2D(src,texCoord+vec2(0,offset.y)).rgb);

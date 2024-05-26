@@ -30,9 +30,9 @@ float getOutline(vec2 texCoord,float blockId){
 }
 
 void drawOutline(inout vec4 color,vec2 texCoord,float blockId){
-    float outline=getOutline(texCoord,blockId);
-    float luma=GET_LUMA(color);
-    color.rgb=mix(color.rgb,(0.5+0.4*luma)*color.rgb,outline);
+    float outline = getOutline(texCoord,blockId);
+    float luma = GET_LUMA(color);
+    color.rgb = mix(color.rgb,(0.5+0.4*luma)*color.rgb,outline * (1 - linearizeDepth(texture2D(depthtex0,texCoord).x)));
 }   
 
 #endif

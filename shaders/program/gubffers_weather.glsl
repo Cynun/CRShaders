@@ -49,6 +49,8 @@ void main() {
     color.rgb*=getAmbientColor(time);
     color.a*=0.5;
 
+    color.a*=1 - clamp((cameraPosition.y - CLOUD_BUTTOM) / (CLOUD_TOP - CLOUD_BUTTOM),0,1);
+
     /* DRAWBUFFERS:0234 */
     gl_FragData[0] = color;
     gl_FragData[1] = vec4(normal,0);

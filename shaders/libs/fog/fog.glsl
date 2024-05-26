@@ -21,8 +21,8 @@ vec3 getDistanceFogColor(vec4 viewCoord,float upDotView,float time){
         vec3 sunColor=getSunColor(time);
         vec3 moonColor=getMoonColor(time);
 
-        float sunLightSth=clamp(-time+0.5,0,1)*0.5;
-        float moonLightSth=clamp(time+0.15,0,1)*0.5;
+        float sunLightSth=clamp(-time+0.5,0,1)*(1-rainStrength);
+        float moonLightSth=clamp(time+0.15,0,1)*(1-rainStrength);
 
         float disToSun=length(normalize(sunPosition)-normalize(viewCoord.xyz));
         float disToMoon=length(normalize(moonPosition)-normalize(viewCoord.xyz));
@@ -52,6 +52,7 @@ void drawDistanceFog(inout vec4 color,vec4 worldCoord,vec4 viewCoord,float upDot
     float distanceFogEnd=getDistanceFogEnd();
     vec3 fogColor = getDistanceFogColor(viewCoord,upDotView,time);
     float dis=clamp((length(worldCoord.xz)-far*distanceFogEnd*distanceFogStart)/(far*distanceFogEnd*(1-distanceFogStart)),0,1);
+    // float dis = clamp(length(worldCoord.xz)/(128*16),0,1);
     dis*=dis;
     color.rgb=mix(color.rgb,fogColor,dis);
 }

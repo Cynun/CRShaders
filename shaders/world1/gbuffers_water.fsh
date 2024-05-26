@@ -1,5 +1,7 @@
 #version 120
 
+#define GBUFFER_WATER
+
 #define FSH
 #define END
 
@@ -8,6 +10,7 @@
 #define VIEW_TO_WORLD
 #define WORLD_TO_ABS
 
+#define DRAW_CLOUD
 #define DRAW_DISTANCE_FOG
 #define DRAW_REFLECT
 

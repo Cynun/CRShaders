@@ -31,34 +31,33 @@ void main() {
     float time=getTime(upVec);
 
     #ifdef GET_LIGHT_VIEW
-    vec3 lightViewCoord;
-    if(time>0){
-        lightViewCoord=moonPosition;
-    }
-    else{
-        lightViewCoord=sunPosition;
-    }
-    lightViewCoord=normalize(lightViewCoord);
+        vec3 lightViewCoord;
+        if(time>0){
+            lightViewCoord=moonPosition;
+        }
+        else{
+            lightViewCoord=sunPosition;
+        }
+        lightViewCoord=normalize(lightViewCoord);
     #endif
 
     #ifdef CLOUD_ENABLE
-    #ifdef DRAW_CLOUD
-    drawCloud(color,screenCoord,lightViewCoord,time);
+        #ifdef DRAW_CLOUD
+            drawCloud(color,screenCoord,lightViewCoord,time);
+        #endif
     #endif
-    #endif
-
     #ifdef WORLD
-    drawVolumetricLight(color,screenCoord,lightViewCoord,time);
+        drawVolumetricLight(color,screenCoord,lightViewCoord,time);
     #endif
 
     gl_FragData[0] = clamp(color,vec4(0),vec4(1));
 	
     #ifdef REFLECT_ENABLE
-    /*DRAWBUFFERS:07*/
-    vec4 reflectColor = color * color;
-    gl_FragData[1] = reflectColor;
+        /*DRAWBUFFERS:07*/
+        vec4 reflectColor = color * color;
+        gl_FragData[1] = reflectColor;
     #else
-    /*DRAWBUFFERS:0*/
+        /*DRAWBUFFERS:0*/
     #endif
 
 }

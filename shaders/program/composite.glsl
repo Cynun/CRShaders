@@ -33,7 +33,7 @@ void main() {
     drawUnwaterColor(color,time);
 
     #ifdef BLOOM_ENABLE
-    getNatureBloom(bloom,color);
+        getNatureBloom(bloom,color);
     #endif
 
     /*DRAWBUFFERS:04*/

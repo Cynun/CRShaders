@@ -4,7 +4,7 @@
 void getNatureBloom(inout vec4 bloom,vec4 color){
     color*=0.5;
     float luma=GET_LUMA(color);
-    luma*=luma*luma;
+    luma*=luma;
     bloom.rgb+=luma*bloom.rgb;
 }
 

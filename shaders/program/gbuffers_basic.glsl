@@ -1,9 +1,11 @@
 #include "/libs/config.glsl"
+#include "/libs/color/color.glsl"
 #include "/libs/uniforms.glsl"
 #include "/libs/util/util.glsl"
 #include "/libs/util/reflection.glsl"
 #include "/libs/lighting/shadow.glsl"
 #include "/libs/lighting/lighting.glsl"
+#include "/libs/sky/cloud.glsl"
 #include "/libs/fog/fog.glsl"
 #include "/libs/color/color.glsl"
 #include "/libs/bloom/bloom.glsl"
@@ -64,76 +66,70 @@ void main() {
     vec4 bloom;
 
     #ifdef DRAW_TEXTURE
-    color = texture2D(texture,texCoord)*baseColor;
+        color = texture2D(texture,texCoord)*baseColor;
     #endif //DRAW_TEXTURE END
+
+    vec3 lightViewCoord;
+    
+    #ifdef WORLD
+        if(time>0){
+            lightViewCoord=moonPosition;
+        }
+        else{
+            lightViewCoord=sunPosition;
+        }
+        lightViewCoord=normalize(lightViewCoord);
+    #endif
+
+    #ifdef END
+        lightViewCoord=normalize(getViewCoordFromWorldCoord(vec4(1,1,1,1)).xyz); 
+    #endif
 
     //Before draw light
 
     #ifdef SCREEN_TO_VIEW
 
-    vec3 screenCoord = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z);
-    vec4 viewCoord=getViewCoord(screenCoord.xy,screenCoord.z);
+        vec3 screenCoord = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z);
+        vec4 viewCoord=getViewCoord(screenCoord.xy,screenCoord.z);
 
-    #ifdef VIEW_TO_WORLD
+        #ifdef VIEW_TO_WORLD
 
-    vec4 worldCoord=getWorldCoordFormViewCoord(viewCoord);
-    float dis=length(worldCoord);
+            vec4 worldCoord=getWorldCoordFormViewCoord(viewCoord);
+            float dis=length(worldCoord);
 
-    #ifdef WORLD_TO_ABS
-    #ifdef AUTO_MATERIAL
+            #ifdef WORLD_TO_ABS
+                #ifdef AUTO_MATERIAL
+                    vec4 absoluteWorldCoord=worldCoord+vec4(cameraPosition,0);
+                    getAutoMaterial(color,normal,material,blockId,absoluteWorldCoord,screenCoord,baseColor);
 
-    vec4 absoluteWorldCoord=worldCoord+vec4(cameraPosition,0);
-    getAutoMaterial(color,normal,material,blockId,absoluteWorldCoord,screenCoord,baseColor);
+                    #ifdef BLOOM_ENABLE
+                        getLighterBloom(bloom,color,material.y);
+                    #endif
+                #endif
+            #endif
 
-    #ifdef BLOOM_ENABLE
-    getLighterBloom(bloom,color,material.y);
-    #endif
+            #ifdef WORLD_TO_SUN
 
-    #endif
-    #endif
+                vec4 sunCoord=getSunScreenCoord(worldCoord);
 
-    #ifdef WORLD_TO_SUN
+                #ifdef DRAW_SHADOW
 
-    vec4 sunCoord=getSunScreenCoord(worldCoord);
+                    #ifdef SHADOW_ENABLE
+                        shadowCoefficient0=getShadowCoefficient(sunCoord,dis,normal,lightViewCoord,shadowtex0,blockId,time);
+                        #ifdef COLORFUL_SHADOW_ENABLE
+                            shadowCoefficient1=getShadowCoefficient(sunCoord,dis,normal,lightViewCoord,shadowtex1,blockId,time);
+                            colorSunCoord=texture2D(shadowcolor0,sunCoord.xy);
+                        #else //COLORFUL_SHADOW CLOSE
+                            shadowCoefficient1=shadowCoefficient0;
+                        #endif //COLORFUL_SHADOW END
+                    #else //DRAW_SHADOW CLOSE
+                        shadowCoefficient0=getAngleShadow(normal,lightViewCoord,blockId,time);
+                        shadowCoefficient1=shadowCoefficient0;
+                    #endif //SHADOW_ENABLE
 
-    #ifdef DRAW_SHADOW
-
-    vec3 lightViewCoord;
-
-    #ifdef WORLD
-    if(time>0){
-        lightViewCoord=moonPosition;
-    }
-    else{
-        lightViewCoord=sunPosition;
-    }
-    lightViewCoord=normalize(lightViewCoord);
-    #endif
-
-    #ifdef END
-    lightViewCoord=normalize(getViewCoordFromWorldCoord(vec4(1,1,1,1)).xyz); 
-    #endif
-
-    #ifdef SHADOW_ENABLE
-
-    shadowCoefficient0=getShadowCoefficient(sunCoord,dis,normal,lightViewCoord,shadowtex0,blockId,time);
-
-    #ifdef COLORFUL_SHADOW_ENABLE
-    shadowCoefficient1=getShadowCoefficient(sunCoord,dis,normal,lightViewCoord,shadowtex1,blockId,time);
-    colorSunCoord=texture2D(shadowcolor0,sunCoord.xy);
-    #else //COLORFUL_SHADOW CLOSE
-    shadowCoefficient1=shadowCoefficient0;
-    #endif //COLORFUL_SHADOW END
-
-    #else //DRAW_SHADOW CLOSE
-    shadowCoefficient0=getAngleShadow(normal,lightViewCoord,blockId,time);
-    shadowCoefficient1=shadowCoefficient0;
-    #endif //DRAW_SHADOW END
-
-    #endif
-
-    #endif //WORLD_TO_SUN END
-    #endif //VIEW_TO_WORLD END
+                #endif //DRAW_SHADOW END
+            #endif //WORLD_TO_SUN END
+        #endif //VIEW_TO_WORLD END
     #endif //SCREEN_TO_VIEW END
 
     //Draw light
@@ -141,21 +137,31 @@ void main() {
 
     //After draw light
     #ifdef SCREEN_TO_VIEW
+        #ifdef DRAW_REFLECT
+            #ifdef REFLECT_ENABLE
+                drawReflect(color,screenCoord,viewCoord,normal,material.x);
+            #endif
+        #endif
 
-    #ifdef DRAW_REFLECT
-    #ifdef REFLECT_ENABLE
-    drawReflect(color,screenCoord,viewCoord,normal,material.x);
-    #endif
-    #endif
+        #ifdef VIEW_TO_WORLD
 
-    #ifdef VIEW_TO_WORLD
+            #ifdef DRAW_DISTANCE_FOG
+                drawDistanceFog(color,worldCoord,viewCoord,dot(upVec,normalize(viewCoord.xyz)),time);
+            #endif //DRAW_DISTANCE_FOG END
 
-    #ifdef DRAW_DISTANCE_FOG
-    drawDistanceFog(color,worldCoord,viewCoord,dot(upVec,normalize(viewCoord.xyz)),time);
-    #endif //DRAW_DISTANCE_FOG END
-
-    #endif //VIEW_TO_WORLD END
+        #endif //VIEW_TO_WORLD END
     #endif //SCREEN_TO_VIEW END
+
+    #ifdef GBUFFER_WATER
+        #ifdef CLOUD_ENABLE
+            #ifdef DRAW_CLOUD
+                drawCloud(color,screenCoord,lightViewCoord,time);
+            #endif
+        #endif
+        #ifdef WORLD
+            drawVolumetricLight(color,screenCoord,lightViewCoord,time);
+        #endif
+    #endif
 
     bloom.a=1;
 

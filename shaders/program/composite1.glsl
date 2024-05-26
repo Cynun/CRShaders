@@ -35,12 +35,12 @@ void main() {
     vec4 bloom;
 
     #ifdef OUTLINE_ENABLE
-    float blockId=texture2D(colortex3,texCoord).x;
-    drawOutline(color,texCoord,blockId);
+        float blockId=texture2D(colortex3,texCoord).x;
+        drawOutline(color,texCoord,blockId);
     #endif
 
     #ifdef BLOOM_ENABLE
-    firstPassBloom(bloom,texCoord);
+        firstPassBloom(bloom,texCoord);
     #endif
 	
     /*DRAWBUFFERS:04*/

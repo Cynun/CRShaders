@@ -43,7 +43,6 @@ float getShadow(sampler2DShadow src,vec3 sunCoord){
     return shadow;
 }
 
-
 float inShadow(vec4 sunCoord,float dis,sampler2DShadow shadowtex,float filterRadius){
     float shadow=0;
 
@@ -54,7 +53,6 @@ float inShadow(vec4 sunCoord,float dis,sampler2DShadow shadowtex,float filterRad
     
     return shadow/9;
 }
-
 
 float getShadowCoefficient(vec4 sunCoord,float dis,vec3 normalViewCoord,vec3 lightViewCoord,
                             sampler2DShadow shadowtex,float blockId,float time){
@@ -111,6 +109,5 @@ float getAngleShadow(vec3 normalViewCoord,vec3 lightViewCoord,float blockId,floa
 
     return shadowCoefficient;
 }
-
 
 #endif

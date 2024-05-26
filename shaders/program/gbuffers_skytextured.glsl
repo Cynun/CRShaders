@@ -51,19 +51,17 @@ void main() {
     bloom.rgb=color.rgb*color.a;
 
     #ifdef WORLD
+        vec3 screenCoord = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z);
+        vec4 viewCoord=getViewCoord(screenCoord.xy,screenCoord.z);
 
-    vec3 screenCoord = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z);
-    vec4 viewCoord=getViewCoord(screenCoord.xy,screenCoord.z);
-
-    float time=getTime(upVec);
-    float disToSun=length(normalize(sunPosition)-normalize(viewCoord.xyz));
-    if(disToSun<0.5){
-        color.rgb*=getSunColor(time);
-    }
-    else{
-        color.rgb*=getMoonColor(time);
-    }
-
+        float time=getTime(upVec);
+        float disToSun=length(normalize(sunPosition)-normalize(viewCoord.xyz));
+        if(disToSun<0.5){
+            color.rgb*=getSunColor(time);
+        }
+        else{
+            color.rgb*=getMoonColor(time);
+        }
     #endif
 
     /* DRAWBUFFERS:0234 */

@@ -32,20 +32,20 @@ void main() {
     vec4 bloom;
 
     #ifdef FAXX_ENABLE
-    FXAA(color,colortex0,texCoord);
+        FXAA(color,colortex0,texCoord);
     #endif
 
     #define FILTERING
     #ifdef FILTERING
-    filtering(color,colortex0,texCoord);
+        filtering(color,colortex0,texCoord);
     #endif
 
     // hsv color adjust
     //colorAdjust(color,vec3(0,0,0));
 
     #ifdef BLOOM_ENABLE
-    secondPassBloom(bloom,texCoord);
-    color.rgb+=bloom.rgb*BLOOM_STRENGHT;
+        secondPassBloom(bloom,texCoord);
+        color.rgb+=bloom.rgb*BLOOM_STRENGHT;
     #endif
 	
     /*DRAWBUFFERS:04*/

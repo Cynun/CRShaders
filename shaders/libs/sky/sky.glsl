@@ -21,11 +21,11 @@ void drawSky(inout vec4 color,inout vec3 bloom,vec4 viewCoord,float upDotView,fl
     #ifdef WORLD
 
     // Get setting
-    vec3 sunColor=getSunColor(time);
-    vec3 moonColor=getMoonColor(time);
+    vec3 sunColor = getSunColor(time);
+    vec3 moonColor = getMoonColor(time);
 
-    float sunLightSth=clamp(-time+0.5,0,1)*0.75*(1-0.8*rainStrength);
-    float moonLightSth=clamp(time+0.15,0,1)*0.75*(1-0.8*rainStrength);
+    float sunLightSth = 0.5 * clamp(-time+0.5,0,1)*(1-rainStrength);
+    float moonLightSth = 0.5 * clamp(time+0.15,0,1)*(1-rainStrength);
 
     float disToSun=length(normalize(sunPosition)-normalize(viewCoord.xyz));
     float disToMoon=length(normalize(moonPosition)-normalize(viewCoord.xyz));

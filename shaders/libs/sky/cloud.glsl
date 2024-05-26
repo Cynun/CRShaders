@@ -6,9 +6,6 @@
 
 #ifdef WORLD
 
-#define CLOUD_BUTTOM 256
-#define CLOUD_TOP 316
-
 float cloudNoise(vec3 absoluteWorldCoord){
     float noise = 
         8.0/16.5*noiseSample((absoluteWorldCoord.xz+frameTimeCounter)/32768).x
@@ -94,7 +91,6 @@ void drawCloud(inout vec4 color,vec3 screenCoord,vec3 lightViewCoord,float time)
     }
 
     color.rgb=mix(color.rgb,cloudColor.rgb,clamp(cloudColor.a,0,1));
-
 
 }
 
