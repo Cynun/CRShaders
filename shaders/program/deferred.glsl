@@ -54,7 +54,7 @@ void main() {
 	
     #ifdef REFLECT_ENABLE
         /*DRAWBUFFERS:07*/
-        vec4 reflectColor = color * color;
+        vec4 reflectColor = color;
         gl_FragData[1] = reflectColor;
     #else
         /*DRAWBUFFERS:0*/

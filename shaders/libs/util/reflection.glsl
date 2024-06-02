@@ -3,8 +3,9 @@
 #ifndef __REFLECTION__
 #define __REFLECTION__
 
-void drawReflect(inout vec4 color,vec3 screenCoord,vec4 viewCoord,vec3 normal,float reflectionStrength){
-    if(reflectionStrength<0.1){
+void drawReflect(inout vec4 color,vec3 screenCoord,vec4 viewCoord,vec3 normal,float metallic,float roughness){
+
+    if(metallic == 0){
         return;
     }
 
@@ -26,8 +27,22 @@ void drawReflect(inout vec4 color,vec3 screenCoord,vec4 viewCoord,vec3 normal,fl
         float testDepth = getLinearDepthFormViewCoord(vec4(testPoint,1));
         if(sampleDepth < testDepth && testDepth - sampleDepth < (1.0 / 2048.0) * (1.0 + testDepth * 200.0 + float(i)))
         {
-            hitColor = vec4(texture2D(colortex7, uv, 0.0).rgb, 1.0);
             hitColor.a = clamp(1.0 - pow(distance(uv, vec2(0.5))*2.0, 4), 0.0, 1.0);
+
+            vec2 offset = vec2(0);
+            if(roughness>0){
+                offset.x = mod(uv.x,0.05*roughness) / (0.05*roughness);
+                offset.y = mod(uv.y,aspectRatio*0.05*roughness) / (aspectRatio*0.05*roughness);
+                uv.x = uv.x - mod(uv.x,0.05*roughness);
+                uv.y = uv.y - mod(uv.y,aspectRatio*0.05*roughness);
+            }
+            vec3 lb = texture2D(colortex7, uv, 0.0).rgb;
+            vec3 lt = texture2D(colortex7, uv + vec2(0,aspectRatio*0.05*roughness), 0.0).rgb;
+            vec3 rb = texture2D(colortex7, uv + vec2(0.05*roughness,0), 0.0).rgb;
+            vec3 rt = texture2D(colortex7, uv + vec2(0.05*roughness,aspectRatio*0.05*roughness), 0.0).rgb;
+
+            hitColor.rgb = mix(mix(lb,rb,offset.x),mix(lt,rt,offset.x),offset.y);
+
             hit = true;
             break;
         }
@@ -43,15 +58,30 @@ void drawReflect(inout vec4 color,vec3 screenCoord,vec4 viewCoord,vec3 normal,fl
         sampleDepth = linearizeDepth(sampleDepth);
         if(testDepth - sampleDepth < 0.5)
         {
-            hitColor = vec4(texture2D(colortex7, uv, 0.0).rgb, 1.0);
             hitColor.a = clamp(1.0 - pow(distance(uv, vec2(0.5))*2.0, 4), 0.0, 1.0);
+
+            vec2 offset = vec2(0);
+            if(roughness>0){
+                offset.x = mod(uv.x,0.05*roughness) / (0.05*roughness);
+                offset.y = mod(uv.y,aspectRatio*0.05*roughness) / (aspectRatio*0.05*roughness);
+                uv.x = uv.x - mod(uv.x,0.05*roughness);
+                uv.y = uv.y - mod(uv.y,aspectRatio*0.05*roughness);
+            }
+            vec3 lb = texture2D(colortex7, uv, 0.0).rgb;
+            vec3 lt = texture2D(colortex7, uv + vec2(0,aspectRatio*0.05*roughness), 0.0).rgb;
+            vec3 rb = texture2D(colortex7, uv + vec2(0.05*roughness,0), 0.0).rgb;
+            vec3 rt = texture2D(colortex7, uv + vec2(0.05*roughness,aspectRatio*0.05*roughness), 0.0).rgb;
+
+            hitColor.rgb = mix(mix(lb,rb,offset.x),mix(lt,rt,offset.x),offset.y);
+
         }
     }
 
     float fresnel = 0.02 + 0.98 * pow(1.0 - dot(reflectVec, normal), 2.0);
 
-    color.rgb=mix(color.rgb,hitColor.rgb,hitColor.a*reflectionStrength*fresnel);
-    
+    float hitColorLuma = GET_LUMA(hitColor);
+    hitColorLuma*=hitColor.a;
+    color.rgb = mix(color.rgb,hitColor.rgb,hitColor.a*metallic*fresnel); 
 }
 
 #endif

@@ -1,1 +1,2 @@
-material.x=0.6;
+material.x=0.4;
+material.w=0.0;

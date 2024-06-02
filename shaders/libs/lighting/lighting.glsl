@@ -8,12 +8,13 @@
 void drawLight(inout vec4 color,vec4 colorSunCoord,float time,float luminous,vec3 lightMapValue,float shadowCoefficient0,float shadowCoefficient1){
 
     // Self-luminous
-    lightMapValue.y=mix(lightMapValue.y,1,luminous);
+    lightMapValue.y = mix(lightMapValue.y,1,luminous);
     #ifndef WORLD
     if(lightMapValue.y<0.5){
         lightMapValue.y=0.4;
     }
     #endif
+    color.rgb*=1+luminous;
    
     // Draw ambient light
     // lightMapValue.x = clamp(pow((1.6*lightMapValue.x-0.65),3)+0.25,0,1);
@@ -27,6 +28,12 @@ void drawLight(inout vec4 color,vec4 colorSunCoord,float time,float luminous,vec
     vec3 torchColor=getTorchColor();
     vec3 shadowColor=getShadowColor();
 
+    // Colorful lighter color
+    #define COLORFUL_LIGHTER
+    #ifdef COLORFUL_LIGHTER
+
+    #endif
+
     // Get light/shadow color
     float colorfulShadowCoefficient=shadowCoefficient0-shadowCoefficient1;
 
@@ -36,25 +43,27 @@ void drawLight(inout vec4 color,vec4 colorSunCoord,float time,float luminous,vec
     vec3 lightOrShadow=vec3(1);
 
     if(shadowLight>0){
-        lightOrShadow=mix(vec3(1),shadowColor,shadowLight);
-        lightOrShadow=mix(lightOrShadow,(1+skyLightColor*colorSunCoord.rgb),colorfulShadowCoefficient*(1-colorSunCoord.a));
+        lightOrShadow = mix(vec3(1),shadowColor,shadowLight);
+        lightOrShadow = mix(lightOrShadow,(1+skyLightColor*colorSunCoord.rgb),colorfulShadowCoefficient*(1-colorSunCoord.a));
     }
     else{
-        lightOrShadow=mix(vec3(1),1+skyLightColor,(-shadowLight));
+        lightOrShadow = mix(vec3(1),1+skyLightColor,(-shadowLight));
     }
     
     // Mix sky light/shadow and torch light
     #ifdef DRAW_LIGHT_IN_DARK_PLACE
     lightOrShadow=max(
-        lightOrShadow*mix(1,clamp(0.3+lightMapValue.y,0,1),max(shadowCoefficient0,0.25*colorfulShadowCoefficient))
+        lightOrShadow * mix(1,0.3 + lightMapValue.y,max(shadowCoefficient0,0.25*colorfulShadowCoefficient))
         ,(1+torchColor)*lightMapValue.x
         );
     #else
-    lightOrShadow=max(lightOrShadow*clamp(0.3+lightMapValue.y,0,1),(1+torchColor)*lightMapValue.x);
+    lightOrShadow=max(lightOrShadow * (0.3 + lightMapValue.y),(1+torchColor)*lightMapValue.x);
     #endif
 
     // Draw light/shadow
     color.rgb*=lightOrShadow;
+
+    color.rgb=clamp(color.rgb,vec3(0),vec3(1));
 
 }
 

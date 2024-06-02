@@ -44,8 +44,14 @@ uniform float aspectRatio;
 uniform vec3 skyColor;
 uniform vec3 fogColor;
 
+// PBR
+uniform sampler2D specular;
+uniform sampler2D normals;
+
+
 #define BLOCKID_NATURE_LIGHTER 10001
 #define BLOCKID_LIGHTER 10002
+#define BLOCKID_BEACON 10201
 #define BLOCKID_WATER 10003
 #define BLOCKID_ICE 10004
 #define BLOCKID_GRASS 10005

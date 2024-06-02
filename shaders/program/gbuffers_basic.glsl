@@ -100,7 +100,12 @@ void main() {
             #ifdef WORLD_TO_ABS
                 #ifdef AUTO_MATERIAL
                     vec4 absoluteWorldCoord=worldCoord+vec4(cameraPosition,0);
-                    getAutoMaterial(color,normal,material,blockId,absoluteWorldCoord,screenCoord,baseColor);
+                    
+                    #ifndef PBR_MATERIAL
+                    getAutoMaterial(color,normal,material,lightMapCoord.y,upVec,blockId,absoluteWorldCoord,screenCoord,baseColor);
+                    #else
+                    getPBRMaterial(color,normal,material,texCoord,lightMapCoord.y,upVec,blockId,absoluteWorldCoord,screenCoord,baseColor);
+                    #endif
 
                     #ifdef BLOOM_ENABLE
                         getLighterBloom(bloom,color,material.y);
@@ -139,7 +144,7 @@ void main() {
     #ifdef SCREEN_TO_VIEW
         #ifdef DRAW_REFLECT
             #ifdef REFLECT_ENABLE
-                drawReflect(color,screenCoord,viewCoord,normal,material.x);
+                drawReflect(color,screenCoord,viewCoord,normal,material.x,material.w);
             #endif
         #endif
 

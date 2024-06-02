@@ -37,9 +37,9 @@
 #define TORCH_COLOR_G 0.5 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define TORCH_COLOR_B 0.3 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 
-#define SUN_LIGHT_DAY_COLOR_R 0.7 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
+#define SUN_LIGHT_DAY_COLOR_R 0.6 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define SUN_LIGHT_DAY_COLOR_G 0.6 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
-#define SUN_LIGHT_DAY_COLOR_B 0.4 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
+#define SUN_LIGHT_DAY_COLOR_B 0.5 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 
 #define SUN_LIGHT_TWILIGHT_COLOR_R 1.0 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define SUN_LIGHT_TWILIGHT_COLOR_G 0.5 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
@@ -57,9 +57,9 @@
 
 // Sky color config
 
-#define SKY_UP_DAY_COLOR_R 0.2 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
-#define SKY_UP_DAY_COLOR_G 0.4 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
-#define SKY_UP_DAY_COLOR_B 0.6 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
+#define SKY_UP_DAY_COLOR_R 0.1 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
+#define SKY_UP_DAY_COLOR_G 0.3 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
+#define SKY_UP_DAY_COLOR_B 0.5 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 
 #define SKY_UP_TWILIGHT_COLOR_R 0.4 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define SKY_UP_TWILIGHT_COLOR_G 0.5 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
@@ -69,9 +69,9 @@
 #define SKY_UP_NIGHT_COLOR_G 0.1 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define SKY_UP_NIGHT_COLOR_B 0.2 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 
-#define SKY_DOWN_DAY_COLOR_R 0.5 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
-#define SKY_DOWN_DAY_COLOR_G 0.7 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
-#define SKY_DOWN_DAY_COLOR_B 0.8 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
+#define SKY_DOWN_DAY_COLOR_R 0.4 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
+#define SKY_DOWN_DAY_COLOR_G 0.6 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
+#define SKY_DOWN_DAY_COLOR_B 0.7 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 
 #define SKY_DOWN_TWILIGHT_COLOR_R 0.9 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define SKY_DOWN_TWILIGHT_COLOR_G 0.7 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
@@ -138,12 +138,13 @@
 
 // Bloom config
 
-#define BLOOM_STRENGHT 1.5 //[1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.0]
+#define BLOOM_STRENGHT 2.0 //[1.0,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.0]
 
 // Cloud config
 
 #define CLOUD_DENSITY 0.5 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 #define RAIN_CLOUD_DENSITY 0.7 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
+
 #define CLOUD_BUTTOM 256
 #define CLOUD_TOP 316
 
@@ -157,5 +158,9 @@
 #define BLOOM_ENABLE
 #define FAXX_ENABLE
 #define LIGHT_ORE_ENABLE
+
+
+// #define BLOCK_CLOUD
+// #define PBR_MATERIAL
 
 #endif

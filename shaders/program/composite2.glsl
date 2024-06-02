@@ -45,7 +45,7 @@ void main() {
 
     #ifdef BLOOM_ENABLE
         secondPassBloom(bloom,texCoord);
-        color.rgb+=bloom.rgb*BLOOM_STRENGHT;
+        color.rgb+=bloom.rgb*2*BLOOM_STRENGHT;
     #endif
 	
     /*DRAWBUFFERS:04*/

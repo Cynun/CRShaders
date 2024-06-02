@@ -7,18 +7,40 @@
 #ifdef WORLD
 
 float cloudNoise(vec3 absoluteWorldCoord){
+    if(absoluteWorldCoord.y > CLOUD_TOP || absoluteWorldCoord.y < CLOUD_BUTTOM){
+        return 0;
+    }
+
+    #ifndef BLOCK_CLOUD
+
     float noise = 
-        8.0/16.5*noiseSample((absoluteWorldCoord.xz+frameTimeCounter)/32768).x
-        +4.0/16.5*noiseSample((-absoluteWorldCoord.zx+frameTimeCounter)/16384).x
-        +1.0/16.5*noiseSample((absoluteWorldCoord.yx+frameTimeCounter)/4096).x
-        +1.0/16.5*noiseSample((-absoluteWorldCoord.xz+frameTimeCounter)/4096).x
-        +1.0/16.5*noiseSample((absoluteWorldCoord.yz+frameTimeCounter)/4096).x
-        +0.5/16.5*noiseSample((-absoluteWorldCoord.xy+frameTimeCounter)/2048).x
-        +0.5/16.5*noiseSample((absoluteWorldCoord.zx+frameTimeCounter)/2048).x
-        +0.5/16.5*noiseSample((-absoluteWorldCoord.yz+frameTimeCounter)/2048).x;
+        8.0/17.25*noiseSample((absoluteWorldCoord.xz+frameTimeCounter)/32768).x
+        +4.0/17.25*noiseSample((-absoluteWorldCoord.zx+frameTimeCounter)/16384).x
+        +1.0/17.25*noiseSample((absoluteWorldCoord.yx+frameTimeCounter)/4096).x
+        +1.0/17.25*noiseSample((-absoluteWorldCoord.xz+frameTimeCounter)/4096).x
+        +1.0/17.25*noiseSample((absoluteWorldCoord.yz+frameTimeCounter)/4096).x
+        +0.5/17.25*noiseSample((-absoluteWorldCoord.xy+frameTimeCounter)/2048).x
+        +0.5/17.25*noiseSample((absoluteWorldCoord.zx+frameTimeCounter)/2048).x
+        +0.5/17.25*noiseSample((-absoluteWorldCoord.yz+frameTimeCounter)/2048).x
+        +0.25/17.25*noiseSample((absoluteWorldCoord.xy+frameTimeCounter)/1024).x
+        +0.25/17.25*noiseSample((-absoluteWorldCoord.zx+frameTimeCounter)/1024).x
+        +0.25/17.25*noiseSample((-absoluteWorldCoord.yz+frameTimeCounter)/1024).x;
     return noise*sqrt(
         cos((absoluteWorldCoord.y-0.5*(CLOUD_TOP+CLOUD_BUTTOM))*1.57/(0.5*(CLOUD_TOP-CLOUD_BUTTOM)))
         );
+
+    #else
+
+    absoluteWorldCoord.xz += frameTimeCounter;
+    absoluteWorldCoord.x = floor(absoluteWorldCoord.x / 16);
+    absoluteWorldCoord.y = floor(absoluteWorldCoord.y / 16);
+    absoluteWorldCoord.z = floor(absoluteWorldCoord.z / 16);
+    float noise = 0.33 * noiseSample(16 * absoluteWorldCoord.xy / 32768).x +
+                  0.33 * noiseSample(16 * absoluteWorldCoord.yz / 32768).x +
+                  0.33 * noiseSample(16 * absoluteWorldCoord.xz / 32768).x;
+    return noise / (1.25 - 0.5 * rainStrength) > 0.5 ? 1 : 0;
+
+    #endif
 }
 
 void drawCloud(inout vec4 color,vec3 screenCoord,vec3 lightViewCoord,float time){
@@ -56,8 +78,11 @@ void drawCloud(inout vec4 color,vec3 screenCoord,vec3 lightViewCoord,float time)
 
     float depth = linearizeDepth(texture2D(depthtex0,screenCoord.st).x);
 
+    vec3 skyDownColor = getSkyDownColor(time);
+    float cloudDensity=1-(mix(0.9+0.1*sin(frameTimeCounter/100),1,rainStrength)*getCloudDensity());
+
     vec3 lightWorldCoord=3*normalize(getWorldCoordFormViewCoord(vec4(lightViewCoord,1)).xyz);
-    for(int i = 0; i < 40; i++)
+    for(int i = 0; i < 42; i++)
     {
         testPoint += dirction * (0.5+0.5*getNoise(1244.214*testPoint.xy+4352.134*testPoint.yz)) * pow(float(i + 1), 1.46);
         if(testPoint.y < CLOUD_BUTTOM || CLOUD_TOP < testPoint.y){
@@ -71,11 +96,9 @@ void drawCloud(inout vec4 color,vec3 screenCoord,vec3 lightViewCoord,float time)
         }
 
         float noise=(cloudNoise(testPoint)+cloudNoise(testPoint-dirction))/2;
-        
-        float cloudDensity=1-(mix(0.9+0.1*sin(frameTimeCounter/100),1,rainStrength)*getCloudDensity());
 
         if(noise>cloudDensity){
-            cloudColor.rgb=getSkyDownColor(time);
+            cloudColor.rgb=skyDownColor;
             cloudColor.a=1;
             float lightStrength=1;
             for(int i = 0;i<5;i++){

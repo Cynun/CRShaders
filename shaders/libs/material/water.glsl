@@ -1,4 +1,5 @@
-material.x=color.a;
+material.x = 1;
+material.w = 0;
 
 if(isEyeInWater==1){
     normal=-normal;
@@ -8,8 +9,8 @@ if(isEyeInWater==1){
 float rand = 0.85 * noiseSample((absoluteWorldCoord.xz + vec2(-0.1*frameTimeCounter,0.1*frameTimeCounter)) / 128).x;
             + 0.15 * noiseSample((absoluteWorldCoord.xz + vec2(0.2*frameTimeCounter,-0.2*frameTimeCounter)) / 64).x;
 rand = 2 * (rand - 0.5);
-normal.x += 0.1 * rand;
-normal.z += 0.1 * rand; 
+normal.x += 0.025 * rand;
+normal.z += 0.025 * rand; 
 normal.xyz = normalize(normal.xyz);
 
 /*
