@@ -1,11 +1,12 @@
 #include "/libs/util/util.glsl"
+#include "/libs/color/color.glsl"
 
 #ifndef __REFLECTION__
 #define __REFLECTION__
 
 void drawReflect(inout vec4 color,vec3 screenCoord,vec4 viewCoord,vec3 normal,float metallic,float roughness){
 
-    if(metallic == 0){
+    if(metallic == 0 && roughness == 1){
         return;
     }
 
@@ -77,11 +78,16 @@ void drawReflect(inout vec4 color,vec3 screenCoord,vec4 viewCoord,vec3 normal,fl
         }
     }
 
-    float fresnel = 0.02 + 0.98 * pow(1.0 - dot(reflectVec, normal), 2.0);
+    const float f0 = 0.04;
+    float fresnel = f0 + (1 - f0) * pow(1.0 - dot(reflectVec, normal), 2.0);
 
     float hitColorLuma = GET_LUMA(hitColor);
     hitColorLuma*=hitColor.a;
-    color.rgb = mix(color.rgb,hitColor.rgb,hitColor.a*metallic*fresnel); 
+    vec3 metalHighlightColor = rgb2hsv(color.rgb);
+    metalHighlightColor.z = hitColorLuma;
+    metalHighlightColor = hsv2rgb(metalHighlightColor.xyz);
+
+    color.rgb = mix(color.rgb,mix(hitColor.rgb,metalHighlightColor,metallic),hitColor.a*fresnel*max(metallic,pow(1 - roughness,2))); 
 }
 
 #endif

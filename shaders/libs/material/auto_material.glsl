@@ -14,9 +14,9 @@ void getPBRMaterial(inout vec4 color,inout vec3 normal,inout vec4 material,vec2 
 
     vec4 normalTexture = texture2D(normals,texCoord);
     float ao = sqrt(1.0 - dot(normalTexture.xy, normalTexture.xy));
-    color.rgb *= ao;
+    color.rgb *= 0.75 + 0.25 * ao;
 
-    material.x = max(pbr.g,pow(1.0 - pbr.r,2));
+    material.x = pbr.g;
     material.y = pbr.a;
     material.z = 0;
     material.w = pbr.r;
@@ -25,14 +25,16 @@ void getPBRMaterial(inout vec4 color,inout vec3 normal,inout vec4 material,vec2 
         #include "/libs/material/water.glsl"
     }
 
+    #ifdef RAIN_REFLECTION
     #ifdef WORLD
     float rainRefectionStrength = 10 * (skyLightStrength - 0.9) * wetness;
     rainRefectionStrength *= noiseSample(absoluteWorldCoord.xz / 128).x;
     rainRefectionStrength *= clamp(dot(upVec,normal),0,1);
     material.x += rainRefectionStrength;
     material.x = clamp(material.x,0,1);
-    material.w -= rainRefectionStrength;
+    material.w -= 2 * rainRefectionStrength;
     material.w = clamp(material.w,0,1);
+    #endif
     #endif
 }
  
@@ -70,14 +72,17 @@ void getAutoMaterial(inout vec4 color,inout vec3 normal,inout vec4 material,floa
         #include "/libs/material/light_ore.glsl"
     }
     #endif
+
+    #ifdef RAIN_REFLECTION
     #ifdef WORLD
     float rainRefectionStrength = 10 * (skyLightStrength - 0.9) * wetness;
     rainRefectionStrength *= noiseSample(absoluteWorldCoord.xz / 128).x;
     rainRefectionStrength *= clamp(dot(upVec,normal),0,1);
-    material.x += rainRefectionStrength;
+    material.x -= rainRefectionStrength;
     material.x = clamp(material.x,0,1);
-    material.w -= rainRefectionStrength;
+    material.w -= 2 * rainRefectionStrength;
     material.w = clamp(material.w,0,1);
+    #endif
     #endif
 }
 

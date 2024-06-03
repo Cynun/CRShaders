@@ -1,4 +1,4 @@
-material.x = 1;
+material.x = 0;
 material.w = 0;
 
 if(isEyeInWater==1){

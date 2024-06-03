@@ -20,6 +20,7 @@ varying vec4 baseColor;
 
 attribute vec4 mc_Entity;
 attribute vec4 mc_midTexCoord;
+attribute vec4 at_tangent;
 
 varying float blockId;
 varying vec3 orgNormal;
@@ -31,10 +32,31 @@ void main() {
 
     texCoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).st;
     lightMapCoord = gl_TextureMatrix[1] * gl_MultiTexCoord1;
+
     orgNormal = gl_NormalMatrix * gl_Normal;
 
-    upVec = normalize(gbufferModelView[1].xyz);
+    /*
+    #ifdef PBR_MATERIAL
 
+	vec3 binormal = normalize(gl_NormalMatrix * cross(at_tangent.xyz, gl_Normal.xyz) * at_tangent.w);
+	vec3 tangent  = normalize(gl_NormalMatrix * at_tangent.xyz);
+	
+	mat3 tbnMatrix = mat3(tangent.x, binormal.x, orgNormal.x,
+						  tangent.y, binormal.y, orgNormal.y,
+						  tangent.z, binormal.z, orgNormal.z);
+								  
+	vec3 viewVector = tbnMatrix * (gl_ModelViewMatrix * gl_Vertex).xyz;
+
+    vec3 normalMap = texture2D(normals,texCoord).xyz * 2.0 - 1.0;
+    if (normalMap.x > -0.999 && normalMap.y > -0.999)
+		orgNormal = clamp(normalize(normalMap * tbnMatrix), vec3(-1.0), vec3(1.0));
+    
+    baseColor.rgb = normalMap;
+
+    #endif
+    */
+
+    upVec = normalize(gbufferModelView[1].xyz);
     blockId = mc_Entity.x;
 
     gl_Position = ftransform();
@@ -100,7 +122,7 @@ void main() {
             #ifdef WORLD_TO_ABS
                 #ifdef AUTO_MATERIAL
                     vec4 absoluteWorldCoord=worldCoord+vec4(cameraPosition,0);
-                    
+
                     #ifndef PBR_MATERIAL
                     getAutoMaterial(color,normal,material,lightMapCoord.y,upVec,blockId,absoluteWorldCoord,screenCoord,baseColor);
                     #else

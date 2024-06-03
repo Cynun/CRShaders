@@ -1,4 +1,4 @@
-material.x = 0.8;
+material.x = 0;
 material.w = 0;
 
 float rand = 0.33 * noiseSample((absoluteWorldCoord.xy) / 128).x +

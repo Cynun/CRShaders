@@ -81,10 +81,15 @@ void drawCloud(inout vec4 color,vec3 screenCoord,vec3 lightViewCoord,float time)
     vec3 skyDownColor = getSkyDownColor(time);
     float cloudDensity=1-(mix(0.9+0.1*sin(frameTimeCounter/100),1,rainStrength)*getCloudDensity());
 
+    #ifdef REAL_CLOUD
+    float hitCounter = 0;
+    #endif
+
     vec3 lightWorldCoord=3*normalize(getWorldCoordFormViewCoord(vec4(lightViewCoord,1)).xyz);
     for(int i = 0; i < 42; i++)
     {
-        testPoint += dirction * (0.5+0.5*getNoise(1244.214*testPoint.xy+4352.134*testPoint.yz)) * pow(float(i + 1), 1.46);
+        vec3 offset = dirction * (0.5+0.5*getNoise(1244.214*testPoint.xy+4352.134*testPoint.yz)) * pow(float(i + 1), 1.46);
+        testPoint += offset;
         if(testPoint.y < CLOUD_BUTTOM || CLOUD_TOP < testPoint.y){
             break;
         }
@@ -98,6 +103,7 @@ void drawCloud(inout vec4 color,vec3 screenCoord,vec3 lightViewCoord,float time)
         float noise=(cloudNoise(testPoint)+cloudNoise(testPoint-dirction))/2;
 
         if(noise>cloudDensity){
+
             cloudColor.rgb=skyDownColor;
             cloudColor.a=1;
             float lightStrength=1;
@@ -110,6 +116,7 @@ void drawCloud(inout vec4 color,vec3 screenCoord,vec3 lightViewCoord,float time)
             cloudColor.rgb+=getCloudLightColor(time)*lightStrength*clamp(abs(time)*25,0,1);
             cloudColor.rgb=clamp(cloudColor.rgb,vec3(0),vec3(1));
             break;
+
         }
     }
 
