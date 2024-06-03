@@ -180,12 +180,12 @@ void main() {
     #endif //SCREEN_TO_VIEW END
 
     #ifdef GBUFFER_WATER
-        #ifdef CLOUD_ENABLE
-            #ifdef DRAW_CLOUD
-                drawCloud(color,screenCoord,lightViewCoord,time);
-            #endif
-        #endif
         #ifdef WORLD
+            #ifdef CLOUD_ENABLE
+                #ifdef DRAW_CLOUD
+                    drawCloud(color,screenCoord,lightViewCoord,time);
+                #endif
+            #endif
             drawVolumetricLight(color,screenCoord,lightViewCoord,time);
         #endif
     #endif
